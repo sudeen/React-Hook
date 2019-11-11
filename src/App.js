@@ -1,54 +1,37 @@
 // eslint-disable-next-line
 import React, { Component, useState, useEffect } from 'react'
 
-
-// Functional based
 const App = () => {
-  const [count, setCount] = useState(0);
-
+  // state
+  const [news, setNews] = useState([])
+  const [searchQuery, setSearchQuery] = useState('react')
+  // fetch news 
+  const fetchNews = () => {
+    fetch(`http://hn.algolia.com/api/v1/search?query=${searchQuery}`)
+      .then(result => result.json())
+      .then(data => setNews(data.hits))
+      .catch(error => console.log(error))
+  }
   useEffect(() => {
-    document.title = `Clicked ${count} times`
-  })
+    fetchNews()
+  }, [searchQuery]) // you can control the behaviour of useEffect using the second argument
 
-  const increment = () => {
-    setCount(count + 1);
-  };
-  return (
-    <div>
-      <h2>Counter App</h2>
-      <button onClick={increment}>
-        Click
-        {count} time
-      </button>
-    </div>
-  )
+const handleChange = (e) => {
+  setSearchQuery(e.target.value)
 }
 
-
-// Class based
-/* class App extends Component {
-  state = {
-    count: 0
-  }
-  increment = () => {
-    this.setState({
-      count: this.state.count + 1
-    })
-  }
-  componentDidMount(){
-    document.title = `Clicked ${this.state.count} times`
-  }
-  componentDidUpdate(){
-    document.title = `Clicked ${this.state.count} times`
-  }
-  render(){
-  return (
+  return(
     <div>
-    <h2>Counter App</h2>
-    <button onClick={this.increment}>Click {this.state.count} time</button>
+      <h2>News</h2>
+      <form>
+        <input type="text" value={searchQuery} onChange={handleChange}/>
+        <button>Search</button>
+      </form>
+      {news.map((n, i) => (
+        <p key="{i}">{n.title}</p>
+      ))}
     </div>
   )
-}
-} */
+} 
 
 export default App
