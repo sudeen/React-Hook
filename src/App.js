@@ -13,6 +13,7 @@ const App = () => {
     setLoading(true)
     fetch(url)
       .then(result => result.json())
+      // eslint-disable-next-line
       .then(data => (setNews(data.hits), setLoading(false)))
       .catch(error => console.log(error))
   }
@@ -30,17 +31,30 @@ const handleSubmit = (e) => {
   setUrl(`http://hn.algolia.com/api/v1/search?query=${searchQuery}`)
 }
 
-  return(
-    <div>
-      <h2>News</h2>
-      {loading ? <h2>Loading...</h2>: ""}
-      <form onSubmit={handleSubmit}>
+// For a single line we can use normal brackets instead of curly braces with return
+const showLoading = () => 
+  (loading ? <h2>Loading...</h2>: "")
+
+
+const searchForm = () => (
+<form onSubmit={handleSubmit}>
         <input type="text" value={searchQuery} onChange={handleChange}/>
         <button>Search</button>
       </form>
-      {news.map((n, i) => (
-        <p key="{i}">{n.title}</p>
-      ))}
+)
+
+const showNews = () => {
+ return news.map((n, i) => (
+    <p key="{i}">{n.title}</p>
+  ))
+}
+
+  return(
+    <div>
+      <h2>News</h2>
+      {showLoading()}
+      {searchForm()}
+      {showNews()}
     </div>
   )
 } 
